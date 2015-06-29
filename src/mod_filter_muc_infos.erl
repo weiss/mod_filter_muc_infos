@@ -1,11 +1,11 @@
 %%%-------------------------------------------------------------------
-%%% File    : mod_filter_muc_spam.erl
+%%% File    : mod_filter_muc_infos.erl
 %%% Author  : Holger Weiss <holger@zedat.fu-berlin.de>
 %%% Purpose : Filter certain MUC messages
 %%% Created : 26 Jun 2015 by Holger Weiss <holger@zedat.fu-berlin.de>
 %%%-------------------------------------------------------------------
 
--module(mod_filter_muc_spam).
+-module(mod_filter_muc_infos).
 -author('holger@zedat.fu-berlin.de').
 
 -behaviour(gen_mod).

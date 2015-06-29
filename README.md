@@ -1,5 +1,5 @@
-mod\_filter\_muc\_spam
-======================
+mod\_filter\_muc\_infos
+=======================
 
 > _Author:_ Holger Weiss (<holger@zedat.fu-berlin.de>)  
 > _Requirements:_ ejabberd 15.06 or newer
@@ -7,7 +7,7 @@ mod\_filter\_muc\_spam
 In order to use this module, add the following line to the `modules` section of
 your `ejabberd.yml` file:
 
-    mod_filter_muc_spam: {}
+    mod_filter_muc_infos: {}
 
 The configurable options are:
 
