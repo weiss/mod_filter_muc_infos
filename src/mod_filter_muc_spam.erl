@@ -14,11 +14,12 @@
 -export([start/2, stop/1]).
 
 %% ejabberd_hooks callbacks.
--export([strip_body_from_subject/5, drop_not_registered/1]).
+-export([strip_body_from_subject/5, drop_info_messages/1]).
 
 -include("jlib.hrl").
 
 -define(NOT_REGISTERED, <<"The nickname you are using is not registered">>).
+-define(NOT_ANONYMOUS, <<"This room is not anonymous">>).
 
 %% -------------------------------------------------------------------
 %% gen_mod callbacks.
@@ -35,11 +36,11 @@ start(Host, Opts) ->
       false ->
 	  ok
     end,
-    case gen_mod:get_opt(drop_not_registered, Opts,
+    case gen_mod:get_opt(drop_info_messages, Opts,
 			 fun(B) when is_boolean(B) -> B end, true) of
       true ->
 	  ejabberd_hooks:add(filter_packet, ?MODULE,
-			     drop_not_registered, 50);
+			     drop_info_messages, 50);
       false ->
 	  ok
     end.
@@ -50,21 +51,23 @@ stop(Host) ->
     ejabberd_hooks:delete(user_receive_packet, Host, ?MODULE,
 			  strip_body_from_subject, 50),
     ejabberd_hooks:delete(filter_packet, ?MODULE,
-			  drop_not_registered, 50).
+			  drop_info_messages, 50).
 
 %% -------------------------------------------------------------------
 %% ejabberd_hooks callbacks.
 %% -------------------------------------------------------------------
 
--spec drop_not_registered({jid(), jid(), xmlel()} | drop)
+-spec drop_info_messages({jid(), jid(), xmlel()} | drop)
       -> {jid(), jid(), xmlel()} | drop.
 
-drop_not_registered({_From, _To, #xmlel{name = <<"message">>,
-					attrs = Attrs} = Message} = Acc) ->
+drop_info_messages({_From, _To, #xmlel{name = <<"message">>,
+				       attrs = Attrs} = Message} = Acc) ->
     case xml:get_attr(<<"type">>, Attrs) of
       {value, <<"groupchat">>} ->
 	  case xml:get_subtag(Message, <<"body">>) of
 	    #xmlel{children = [{xmlcdata, ?NOT_REGISTERED}]} ->
+		drop;
+	    #xmlel{children = [{xmlcdata, ?NOT_ANONYMOUS}]} ->
 		drop;
 	    _ ->
 		Acc
@@ -72,7 +75,7 @@ drop_not_registered({_From, _To, #xmlel{name = <<"message">>,
       _ ->
 	  Acc
     end;
-drop_not_registered(Acc) -> Acc.
+drop_info_messages(Acc) -> Acc.
 
 -spec strip_body_from_subject(xmlel(), term(), jid(), jid(), jid()) -> xmlel().
 
