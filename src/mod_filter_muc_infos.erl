@@ -60,8 +60,9 @@ stop(Host) ->
 -spec drop_info_messages({jid(), jid(), xmlel()} | drop)
       -> {jid(), jid(), xmlel()} | drop.
 
-drop_info_messages({_From, _To, #xmlel{name = <<"message">>,
-				       attrs = Attrs} = Message} = Acc) ->
+drop_info_messages({#jid{lresource = <<"">>}, _To,
+		    #xmlel{name = <<"message">>,
+			   attrs = Attrs} = Message} = Acc) ->
     case xml:get_attr(<<"type">>, Attrs) of
       {value, <<"groupchat">>} ->
 	  case xml:get_subtag(Message, <<"body">>) of
@@ -80,7 +81,7 @@ drop_info_messages(Acc) -> Acc.
 -spec strip_body_from_subject(xmlel(), term(), jid(), jid(), jid()) -> xmlel().
 
 strip_body_from_subject(#xmlel{name = <<"message">>, attrs = Attrs} = Message,
-			_C2SState, _JID, _From, _To) ->
+			_C2SState, _JID, #jid{lresource = <<"">>}, _To) ->
     case xml:get_attr(<<"type">>, Attrs) of
       {value, <<"groupchat">>} ->
 	  case xml:get_subtag(Message, <<"subject">>) of

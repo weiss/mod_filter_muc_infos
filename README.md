@@ -14,12 +14,12 @@ The configurable options are:
 - `strip_body_from_subject` (default: `true`)
 
   Unless this option is set to `false`, any `<body/>` is removed from groupchat
-  messages that include a `<subject/>`.
+  messages that were sent from a bare JID and include a `<subject/>`.
 
 - `drop_info_messages` (default: `true`)
 
-  Unless this option is set to `false`, groupchat messages with either of the
-  following `<body/>` contents will be dropped:
+  Unless this option is set to `false`, groupchat messages that were sent from a
+  bare JID and have either of the following `<body/>` contents will be dropped:
 
   - "The nickname you are using is not registered"
   - "This room is not anonymous"
