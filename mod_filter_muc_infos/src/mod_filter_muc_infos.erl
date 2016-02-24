@@ -63,9 +63,9 @@ stop(Host) ->
 drop_info_messages({#jid{lresource = <<"">>}, _To,
 		    #xmlel{name = <<"message">>,
 			   attrs = Attrs} = Message} = Acc) ->
-    case xml:get_attr(<<"type">>, Attrs) of
+    case fxml:get_attr(<<"type">>, Attrs) of
       {value, <<"groupchat">>} ->
-	  case xml:get_subtag(Message, <<"body">>) of
+	  case fxml:get_subtag(Message, <<"body">>) of
 	    #xmlel{children = [{xmlcdata, ?NOT_REGISTERED}]} ->
 		drop;
 	    #xmlel{children = [{xmlcdata, ?NOT_ANONYMOUS}]} ->
@@ -82,9 +82,9 @@ drop_info_messages(Acc) -> Acc.
 
 strip_body_from_subject(#xmlel{name = <<"message">>, attrs = Attrs} = Message,
 			_C2SState, _JID, #jid{lresource = <<"">>}, _To) ->
-    case xml:get_attr(<<"type">>, Attrs) of
+    case fxml:get_attr(<<"type">>, Attrs) of
       {value, <<"groupchat">>} ->
-	  case xml:get_subtag(Message, <<"subject">>) of
+	  case fxml:get_subtag(Message, <<"subject">>) of
 	    #xmlel{} ->
 		strip_body(Message);
 	    _ ->
